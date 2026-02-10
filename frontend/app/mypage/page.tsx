@@ -40,10 +40,14 @@ export default function MyPage() {
 
       <div className="rounded border bg-white p-3">
         <h2 className="mb-2 font-semibold">구매 내역</h2>
+        {!isLoading && (purchases?.purchases.length ?? 0) === 0 && (
+          <p className="text-sm text-slate-500">구매 내역이 없습니다.</p>
+        )}
         <ul className="space-y-1 text-sm">
           {purchases?.purchases.map((item) => (
             <li key={item.id}>
-              {item.product_title} / 수량 {item.quantity} / {item.amount.toLocaleString()}원
+              {item.product_title} / 수량 {item.quantity} / {item.amount.toLocaleString()}원 / 구매일{" "}
+              {new Date(item.purchased_at).toLocaleString()}
             </li>
           ))}
         </ul>
@@ -51,10 +55,14 @@ export default function MyPage() {
 
       <div className="rounded border bg-white p-3">
         <h2 className="mb-2 font-semibold">판매 내역</h2>
+        {!isLoading && (sales?.purchases.length ?? 0) === 0 && (
+          <p className="text-sm text-slate-500">판매 내역이 없습니다.</p>
+        )}
         <ul className="space-y-1 text-sm">
           {sales?.purchases.map((item) => (
             <li key={item.id}>
-              {item.product_title} / 수량 {item.quantity} / {item.amount.toLocaleString()}원
+              {item.product_title} / 수량 {item.quantity} / {item.amount.toLocaleString()}원 / 판매일{" "}
+              {new Date(item.purchased_at).toLocaleString()}
             </li>
           ))}
         </ul>
