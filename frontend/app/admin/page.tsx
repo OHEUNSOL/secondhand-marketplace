@@ -1,8 +1,10 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 import { request } from "@/lib/api";
+import type { User } from "@/lib/types";
 
 type AdminProduct = {
   id: number;
@@ -14,9 +16,12 @@ type AdminProduct = {
 };
 
 export default function AdminPage() {
+  const router = useRouter();
   const [items, setItems] = useState<AdminProduct[]>([]);
   const [reasonById, setReasonById] = useState<Record<number, string>>({});
   const [error, setError] = useState("");
+  const [isAccessChecking, setIsAccessChecking] = useState(true);
+  const [isAdmin, setIsAdmin] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [isMutating, setIsMutating] = useState(false);
 
@@ -34,8 +39,36 @@ export default function AdminPage() {
   };
 
   useEffect(() => {
-    void load();
-  }, []);
+    void (async () => {
+      try {
+        setError("");
+        const me = await request<User>("/auth/me", { auth: true });
+        if (me.role !== "admin") {
+          router.replace("/");
+          return;
+        }
+        setIsAdmin(true);
+      } catch {
+        router.replace("/login");
+      } finally {
+        setIsAccessChecking(false);
+      }
+    })();
+  }, [router]);
+
+  useEffect(() => {
+    if (isAdmin) {
+      void load();
+    }
+  }, [isAdmin]);
+
+  if (isAccessChecking) {
+    return <p className="text-sm text-slate-600">권한 확인 중...</p>;
+  }
+
+  if (!isAdmin) {
+    return null;
+  }
 
   const blind = async (id: number) => {
     setIsMutating(true);
