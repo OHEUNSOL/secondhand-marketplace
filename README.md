@@ -11,7 +11,7 @@
 - Frontend: Next.js (App Router), TypeScript, Tailwind CSS
 - Backend: FastAPI, SQLAlchemy
 - Database: PostgreSQL
-- Auth: JWT Access Token + bcrypt
+- Auth: JWT Access/Refresh Token + bcrypt
 - Infra(Local): Docker Compose (PostgreSQL)
 
 ## 기술 스택 선정 시 고려한 점
@@ -35,10 +35,11 @@
 
 ### 인증 흐름
 1. 사용자가 `/auth/login`으로 이메일/비밀번호 전송
-2. FastAPI가 bcrypt 검증 후 JWT Access Token 발급
-3. 프론트가 토큰을 `localStorage`에 저장
-4. 보호 API 호출 시 `Authorization: Bearer <token>` 헤더 전송
-5. 백엔드 `Depends`가 토큰 검증 후 사용자/관리자 권한 확인
+2. FastAPI가 bcrypt 검증 후 JWT Access/Refresh Token 발급
+3. 프론트가 Access/Refresh 토큰을 `localStorage`에 저장
+4. 보호 API 호출 시 `Authorization: Bearer <access_token>` 헤더 전송
+5. Access Token 만료(401) 시 `/auth/refresh`로 재발급 후 자동 재시도
+6. 백엔드 `Depends`가 토큰 검증 후 사용자/관리자 권한 확인
 
 ### 간단 다이어그램
 ```text
@@ -135,13 +136,13 @@ python -m unittest -v tests/test_requirements_unittest.py tests/test_error_forma
 - [x] 상품 등록/수정/삭제
 - [x] 상품 목록/검색/카테고리/정렬/페이지네이션
 - [x] 상품 상세/장바구니 담기/바로 구매
-- [x] 장바구니 수량 변경/삭제/선택 구매/총액
+- [x] 장바구니 삭제/선택 구매/총액 (중고 단일 상품 수량 1 고정)
 - [x] 구매 완료 처리(상품 판매완료 + 구매내역 저장)
 - [x] 마이페이지 구매/판매 내역
 - [x] 관리자 상품 조회/블라인드/해제
 - [x] API 에러 응답 표준화
 - [x] 로딩/에러 상태 UI
-- [x] 장바구니 낙관적 업데이트
+- [x] 장바구니 낙관적 업데이트(선택/삭제)
 - [x] 상품 동시 구매 방지(원자적 상태 전환)
 - [x] 테스트 코드 작성 및 실행 검증
 
