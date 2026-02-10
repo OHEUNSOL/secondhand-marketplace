@@ -39,3 +39,6 @@ coverage/
 
 # Local nested git directory accidentally created inside frontend
 frontend/.git/
+
+# Local assignment description (keep local only)
+PROBLEM.md
