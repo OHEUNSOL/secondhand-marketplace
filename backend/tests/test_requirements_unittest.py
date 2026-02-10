@@ -3,6 +3,8 @@ import unittest
 from concurrent.futures import ThreadPoolExecutor
 from types import SimpleNamespace
 
+from pydantic import ValidationError
+
 # Configure env before app imports.
 os.environ.setdefault("DATABASE_URL", "sqlite:///./test_secondhand.db")
 os.environ.setdefault("JWT_SECRET_KEY", "test-secret-key")
@@ -208,18 +210,19 @@ class RequirementsServiceTest(unittest.TestCase):
         p1_item_id = next(item.id for item in items if item.product_id == p1.id)
         p2_item_id = next(item.id for item in items if item.product_id == p2.id)
 
-        cart_service.update(buyer.id, p1_item_id, CartItemUpdate(quantity=2))
+        with self.assertRaises(ValidationError):
+            cart_service.update(buyer.id, p1_item_id, CartItemUpdate(quantity=2))
         cart_service.update(buyer.id, p2_item_id, CartItemUpdate(selected=False))
 
         refreshed = cart_service.list(buyer.id)
         selected_total = sum(
             item.quantity * item.product.price for item in refreshed if item.selected
         )
-        self.assertEqual(selected_total, 100000)
+        self.assertEqual(selected_total, 50000)
 
         purchases = PurchaseService(self.db).buy_selected_cart_items(buyer.id)
         self.assertEqual(len(purchases), 1)
-        self.assertEqual(purchases[0].amount, 100000)
+        self.assertEqual(purchases[0].amount, 50000)
 
         cart_service.delete(buyer.id, p2_item_id)
         left = cart_service.list(buyer.id)

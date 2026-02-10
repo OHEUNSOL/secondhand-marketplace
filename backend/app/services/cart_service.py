@@ -24,12 +24,13 @@ class CartService:
 
         item = self.cart_repo.get_item(user_id, payload.product_id)
         if item:
-            item.quantity += payload.quantity
+            item.quantity = 1
+            item.selected = True
         else:
             item = CartItem(
                 user_id=user_id,
                 product_id=payload.product_id,
-                quantity=payload.quantity,
+                quantity=1,
                 selected=True,
             )
             self.cart_repo.create(item)
@@ -46,6 +47,8 @@ class CartService:
             raise ServiceError(404, "Cart item not found")
 
         if payload.quantity is not None:
+            if payload.quantity != 1:
+                raise ServiceError(400, "Secondhand item quantity must be 1")
             item.quantity = payload.quantity
         if payload.selected is not None:
             item.selected = payload.selected
