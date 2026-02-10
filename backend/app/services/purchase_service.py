@@ -62,8 +62,8 @@ class PurchaseService:
                 buyer_id=buyer_id,
                 seller_id=product.seller_id,
                 product_id=product.id,
-                quantity=item.quantity,
-                amount=product.price * item.quantity,
+                quantity=1,
+                amount=product.price,
             )
             self.purchase_repo.create(purchase)
             self.cart_repo.delete(item)

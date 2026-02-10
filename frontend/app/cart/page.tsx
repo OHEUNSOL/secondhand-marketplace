@@ -138,14 +138,7 @@ export default function CartPage() {
                 />{" "}
                 선택 구매
               </label>
-              <input
-                type="number"
-                min={1}
-                className="w-20 rounded border px-2 py-1"
-                value={item.quantity}
-                disabled={isMutating}
-                onChange={(e) => updateItem(item.id, { quantity: Number(e.target.value) })}
-              />
+              <p className="text-sm text-slate-600">수량: 1 (중고 단일 상품)</p>
             </div>
           </div>
         ))}

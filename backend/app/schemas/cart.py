@@ -5,11 +5,11 @@ from app.models.enums import ProductStatus
 
 class CartItemCreate(BaseModel):
     product_id: int
-    quantity: int = Field(ge=1, le=99)
+    quantity: int = Field(ge=1, le=1)
 
 
 class CartItemUpdate(BaseModel):
-    quantity: int | None = Field(default=None, ge=1, le=99)
+    quantity: int | None = Field(default=None, ge=1, le=1)
     selected: bool | None = None
 
 
