@@ -129,6 +129,7 @@ python -m unittest -v tests/test_requirements_unittest.py tests/test_error_forma
 ## 구현한 기능 체크리스트
 - [x] 회원가입/로그인 (이메일+비밀번호)
 - [x] bcrypt 해싱 저장 + JWT 발급/검증
+- [x] Refresh Token 재발급(`/auth/refresh`) 및 프론트 자동 재시도
 - [x] 관리자 시드 계정
 - [x] 상품 등록/수정/삭제
 - [x] 상품 목록/검색/카테고리/정렬/페이지네이션
