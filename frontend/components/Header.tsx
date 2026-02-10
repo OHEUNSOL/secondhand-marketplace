@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
-import { clearToken, getToken } from "@/lib/auth";
+import { clearTokens, getToken } from "@/lib/auth";
 import { request } from "@/lib/api";
 import type { User } from "@/lib/types";
 
@@ -21,13 +21,13 @@ export default function Header() {
         const me = await request<User>("/auth/me", { auth: true });
         setUser(me);
       } catch {
-        clearToken();
+        clearTokens();
       }
     })();
   }, []);
 
   const logout = () => {
-    clearToken();
+    clearTokens();
     window.location.href = "/";
   };
 

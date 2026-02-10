@@ -56,9 +56,12 @@ class RequirementsServiceTest(unittest.TestCase):
         user = auth_service.signup(
             SimpleNamespace(email=email, nickname=nickname, password=password)
         )
-        token = auth_service.login(SimpleNamespace(email=email, password=password))
-        subject = decode_token(token)
+        access_token, refresh_token = auth_service.login(
+            SimpleNamespace(email=email, password=password)
+        )
+        subject = decode_token(access_token)
         self.assertEqual(int(subject), user.id)
+        self.assertEqual(int(decode_token(refresh_token, expected_type="refresh")), user.id)
         return user
 
     def create_product(self, seller_id: int, title: str, price: int, category: str = "electronics") -> Product:
