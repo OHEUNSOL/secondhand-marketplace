@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useState } from "react";
 
-import { setToken } from "@/lib/auth";
+import { setTokens } from "@/lib/auth";
 import { request } from "@/lib/api";
 
 export default function LoginPage() {
@@ -16,11 +16,14 @@ export default function LoginPage() {
     setIsSubmitting(true);
     try {
       setError("");
-      const data = await request<{ access_token: string }>("/auth/login", {
-        method: "POST",
-        body: { email, password },
-      });
-      setToken(data.access_token);
+      const data = await request<{ access_token: string; refresh_token: string }>(
+        "/auth/login",
+        {
+          method: "POST",
+          body: { email, password },
+        },
+      );
+      setTokens(data.access_token, data.refresh_token);
       window.location.href = "/";
     } catch (e) {
       setError(e instanceof Error ? e.message : "로그인 실패");

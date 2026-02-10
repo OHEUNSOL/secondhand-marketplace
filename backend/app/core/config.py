@@ -9,7 +9,8 @@ class Settings(BaseSettings):
     jwt_secret_key: str
     jwt_algorithm: str = "HS256"
     jwt_expire_minutes: int = 120
-    cors_origins: str = "http://localhost:3000"
+    jwt_refresh_expire_minutes: int = 60 * 24 * 14
+    cors_origins: str = "http://localhost:3000,http://127.0.0.1:3000"
 
     admin_email: str = "admin@example.com"
     admin_password: str = "Admin1234!"

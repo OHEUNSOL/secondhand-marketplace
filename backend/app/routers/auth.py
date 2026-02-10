@@ -4,7 +4,13 @@ from sqlalchemy.orm import Session
 from app.core.database import get_db
 from app.models import User
 from app.routers.deps import get_current_user
-from app.schemas.auth import LoginRequest, SignupRequest, TokenResponse, UserResponse
+from app.schemas.auth import (
+    LoginRequest,
+    RefreshRequest,
+    SignupRequest,
+    TokenResponse,
+    UserResponse,
+)
 from app.services.auth_service import AuthService
 from app.services.errors import ServiceError
 
@@ -27,8 +33,20 @@ def signup(payload: SignupRequest, db: Session = Depends(get_db)):
 def login(payload: LoginRequest, db: Session = Depends(get_db)):
     service = AuthService(db)
     try:
-        token = service.login(payload)
-        return TokenResponse(access_token=token)
+        access_token, refresh_token = service.login(payload)
+        return TokenResponse(access_token=access_token, refresh_token=refresh_token)
+    except ServiceError as exc:
+        from fastapi import HTTPException
+
+        raise HTTPException(status_code=exc.status_code, detail=exc.message)
+
+
+@router.post("/refresh", response_model=TokenResponse)
+def refresh(payload: RefreshRequest, db: Session = Depends(get_db)):
+    service = AuthService(db)
+    try:
+        access_token, refresh_token = service.refresh(payload.refresh_token)
+        return TokenResponse(access_token=access_token, refresh_token=refresh_token)
     except ServiceError as exc:
         from fastapi import HTTPException
 

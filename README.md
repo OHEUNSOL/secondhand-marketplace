@@ -102,7 +102,8 @@ npm run dev
 - `DATABASE_URL=postgresql+psycopg://postgres:postgres@localhost:5432/secondhand_marketplace`
 - `JWT_SECRET_KEY=replace-with-strong-secret`
 - `JWT_EXPIRE_MINUTES=120`
-- `CORS_ORIGINS=http://localhost:3000`
+- `JWT_REFRESH_EXPIRE_MINUTES=20160`
+- `CORS_ORIGINS=http://localhost:3000,http://127.0.0.1:3000`
 - `ADMIN_EMAIL=admin@example.com`
 - `ADMIN_PASSWORD=Admin1234!`
 - `ADMIN_NICKNAME=market-admin`
@@ -129,6 +130,7 @@ python -m unittest -v tests/test_requirements_unittest.py tests/test_error_forma
 ## 구현한 기능 체크리스트
 - [x] 회원가입/로그인 (이메일+비밀번호)
 - [x] bcrypt 해싱 저장 + JWT 발급/검증
+- [x] Refresh Token 재발급(`/auth/refresh`) 및 프론트 자동 재시도
 - [x] 관리자 시드 계정
 - [x] 상품 등록/수정/삭제
 - [x] 상품 목록/검색/카테고리/정렬/페이지네이션
@@ -144,8 +146,6 @@ python -m unittest -v tests/test_requirements_unittest.py tests/test_error_forma
 - [x] 테스트 코드 작성 및 실행 검증
 
 ## 시간 부족으로 구현하지 못한 부분 및 계획
-- Refresh Token 미구현
-  - 계획: `refresh_tokens` 저장소(토큰 회전/폐기) 도입 후 `/auth/refresh` 엔드포인트 추가
 - 실제 파일 업로드(이미지 저장소) 미구현
   - 계획: S3 또는 로컬 스토리지 업로드 API 추가, URL 입력 방식과 병행 지원
 - 프론트 E2E 테스트 미구현
