@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useParams } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 
@@ -8,6 +9,28 @@ import type { ProductCategory, ProductCondition, ProductDetail, User } from "@/l
 
 const CATEGORIES: ProductCategory[] = ["electronics", "clothes", "home", "books", "etc"];
 const CONDITIONS: ProductCondition[] = ["new", "used"];
+
+function ImagePreview({ src }: { src: string }) {
+  const [isBroken, setIsBroken] = useState(false);
+
+  if (isBroken) {
+    return <div className="flex h-48 items-center justify-center rounded border bg-slate-100 text-sm text-slate-500">이미지를 불러올 수 없습니다.</div>;
+  }
+
+  return (
+    <div className="overflow-hidden rounded border bg-white">
+      <Image
+        src={src}
+        alt="상품 이미지"
+        width={960}
+        height={720}
+        className="h-48 w-full object-cover"
+        unoptimized
+        onError={() => setIsBroken(true)}
+      />
+    </div>
+  );
+}
 
 export default function ProductDetailPage() {
   const params = useParams<{ id: string }>();
@@ -165,11 +188,9 @@ export default function ProductDetailPage() {
       <p className="whitespace-pre-wrap">{product.description}</p>
 
       {product.image_urls.length > 0 && (
-        <div className="space-y-1">
+        <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 md:grid-cols-3">
           {product.image_urls.map((url) => (
-            <a className="block text-sm text-blue-700 underline" key={url} href={url} target="_blank">
-              {url}
-            </a>
+            <ImagePreview key={url} src={url} />
           ))}
         </div>
       )}
